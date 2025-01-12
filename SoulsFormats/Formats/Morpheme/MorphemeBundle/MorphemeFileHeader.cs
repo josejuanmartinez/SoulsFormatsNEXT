@@ -1,6 +1,4 @@
-﻿using Org.BouncyCastle.Crypto.Agreement.Srp;
-
-namespace SoulsFormats.Formats.Morpheme.MorphemeBundle
+﻿namespace SoulsFormats.Formats.Morpheme.MorphemeBundle
 {
     /// <summary>
     /// Header for Morpheme files.
