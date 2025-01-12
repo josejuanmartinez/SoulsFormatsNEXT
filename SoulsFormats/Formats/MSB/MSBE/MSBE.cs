@@ -75,37 +75,46 @@ namespace SoulsFormats
         /// </summary>
         protected override void Read(BinaryReaderEx br)
         {
-            br.BigEndian = false;
-            MSB.AssertHeader(br);
+            try
+            {
+                br.BigEndian = false;
+                MSB.AssertHeader(br);
 
-            Entries entries;
-            Models = new ModelParam();
-            entries.Models = Models.Read(br);
-            Events = new EventParam();
-            entries.Events = Events.Read(br);
-            Regions = new PointParam();
-            entries.Regions = Regions.Read(br);
-            Routes = new RouteParam();
-            entries.Routes = Routes.Read(br);
-            Layers = new EmptyParam(0x49, "LAYER_PARAM_ST");
-            Layers.Read(br);
-            Parts = new PartsParam();
-            entries.Parts = Parts.Read(br);
+                Entries entries;
+                Models = new ModelParam();
+                entries.Models = Models.Read(br);
+                Events = new EventParam();
+                entries.Events = Events.Read(br);
+                Regions = new PointParam();
+                entries.Regions = Regions.Read(br);
+                Routes = new RouteParam();
+                entries.Routes = Routes.Read(br);
+                Layers = new EmptyParam(0x49, "LAYER_PARAM_ST");
+                Layers.Read(br);
+                Parts = new PartsParam();
+                entries.Parts = Parts.Read(br);
 
-            if (br.Position != 0)
-                throw new InvalidDataException("The next param offset of the final param should be 0, but it wasn't.");
+                if (br.Position != 0)
+                    throw new InvalidDataException("The next param offset of the final param should be 0, but it wasn't.");
 
-            MSB.DisambiguateNames(entries.Models);
-            MSB.DisambiguateNames(entries.Regions);
-            MSB.DisambiguateNames(entries.Parts);
-            MSB.DisambiguateNames(entries.Events);
+                MSB.DisambiguateNames(entries.Models);
+                MSB.DisambiguateNames(entries.Regions);
+                MSB.DisambiguateNames(entries.Parts);
+                MSB.DisambiguateNames(entries.Events);
 
-            foreach (Event evt in entries.Events)
-                evt.GetNames(this, entries);
-            foreach (Region region in entries.Regions)
-                region.GetNames(entries);
-            foreach (Part part in entries.Parts)
-                part.GetNames(this, entries);
+                foreach (Event evt in entries.Events)
+                    evt.GetNames(this, entries);
+                foreach (Region region in entries.Regions)
+                    region.GetNames(entries);
+                foreach (Part part in entries.Parts)
+                    part.GetNames(this, entries);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return;
+            }
+            
         }
 
         /// <summary>
